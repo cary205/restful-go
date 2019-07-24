@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -67,10 +66,29 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	log.Println("UpdateTodo called")
-	fmt.Fprintln(w, "not implemented !")
+
+	defer r.Body.Close()
+	var params models.Todo
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	if err := dao.UpdateTodo(params); err != nil {
+		responseWithJson(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	responseWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	log.Println("DeleteTodo called")
-	fmt.Fprintln(w, "not implemented !")
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if err := dao.RemoveTodo(id); err != nil {
+		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	responseWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }

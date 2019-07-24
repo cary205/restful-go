@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/cary205/restful-go/routes"
@@ -9,5 +10,7 @@ import (
 func main() {
 	r := routes.NewRouter()
 
-	http.ListenAndServe(":8080", r)
+	//func ListenAndServe(addr string, handler Handler) error
+	//Handler <=> *Router ### func (*Router) ServeHTTP ###
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

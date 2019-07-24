@@ -8,33 +8,38 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Route struct {
-	Method  string
-	Pattern string
-	Handler http.HandlerFunc
+type myRoute struct {
+	method  string
+	pattern string
+	//type HandlerFunc func(ResponseWriter, *Request)
+	handlerFunc http.HandlerFunc
 }
 
-var routes []Route
+var myRoutes []myRoute
 
 func init() {
-	register("GET", "/todo", controllers.AllTodos)
-	register("GET", "/todo/{id}", controllers.FindTodo)
-	register("POST", "/todo", controllers.CreateTodo)
-	register("PUT", "/todo", controllers.UpdateTodo)
-	register("DELETE", "/todo", controllers.DeleteTodo)
+	register("GET", "/todos", controllers.AllTodos)
+	register("GET", "/todos/{id}", controllers.FindTodo)
+	register("POST", "/todos", controllers.CreateTodo)
+	register("PUT", "/todos", controllers.UpdateTodo)
+	register("DELETE", "/todos/{id}", controllers.DeleteTodo)
 
 	log.Println("routes inited")
 
 }
 
 func NewRouter() *mux.Router {
+	//func NewRouter() *Router
 	r := mux.NewRouter()
-	for _, route := range routes {
-		r.HandleFunc(route.Pattern, route.Handler).Methods(route.Method)
+
+	for _, route := range myRoutes {
+		//func (*Router) HandleFunc
+		r.HandleFunc(route.pattern, route.handlerFunc).Methods(route.method)
 	}
+
 	return r
 }
 
-func register(method, pattern string, handler http.HandlerFunc) {
-	routes = append(routes, Route{method, pattern, handler})
+func register(method, pattern string, handlerFunc http.HandlerFunc) {
+	myRoutes = append(myRoutes, myRoute{method, pattern, handlerFunc})
 }
