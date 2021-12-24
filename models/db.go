@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -34,10 +35,12 @@ func init() {
 // }
 
 func FindAll(db, collection string, query, selector, result interface{}) error {
-	// ms, c := connect(db, collection)
-	// defer ms.Close()
-	// return c.Find(query).Select(selector).All(result)
-	return nil
+	coll := GlobalC.Database(db).Collection(collection)
+	cursor, err := coll.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return err
+	}
+	return cursor.All(context.TODO(), result)
 }
 
 func FindOne(db, collection string, query, selector, result interface{}) error {
