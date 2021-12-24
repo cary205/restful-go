@@ -4,12 +4,13 @@ import (
 	"errors"
 	"log"
 
-	"github.com/globalsign/mgo/bson"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Todo struct {
-	Id      bson.ObjectId `bson:"_id" json:"id"`
-	Content string        `bson:"content" json:"content"`
+	Id      primitive.ObjectID `bson:"_id" json:"id"`
+	Content string             `bson:"content" json:"content"`
 }
 
 const (
@@ -30,11 +31,12 @@ func (m *Todo) FindTodoById(id string) (Todo, error) {
 
 	var result Todo
 
-	if !bson.IsObjectIdHex(id) {
+	docID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
 		return result, errors.New("Invalid OID")
 	}
 
-	err := FindOne(db, collection, bson.M{"_id": bson.ObjectIdHex(id)}, nil, &result)
+	err = FindOne(db, collection, bson.M{"_id": docID}, nil, &result)
 	return result, err
 }
 
@@ -51,11 +53,12 @@ func (m *Todo) UpdateTodo(todo Todo) error {
 }
 
 func (m *Todo) RemoveTodo(id string) error {
-	log.Println("RemoveTodo called")
+	// log.Println("RemoveTodo called")
 
-	if !bson.IsObjectIdHex(id) {
-		return errors.New("Invalid OID")
-	}
+	// if !bson.IsObjectIdHex(id) {
+	// 	return errors.New("Invalid OID")
+	// }
 
-	return Remove(db, collection, bson.M{"_id": bson.ObjectIdHex(id)})
+	// return Remove(db, collection, bson.M{"_id": bson.ObjectIdHex(id)})
+	return nil
 }
