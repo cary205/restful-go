@@ -1,5 +1,10 @@
 
 ```shell
+docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=<username> -e MONGO_INITDB_ROOT_PASSWORD=<password> mongo:4.4.10
+export MONGODB_URL=mongodb://<username>:<password>@localhost:27017/todo_data?authSource=admin
+```
+
+```shell
 curl -v http://localhost:8080/todos
 [{"id":"5d146d915992aa1941069611","content":"gogo"}]
 ```

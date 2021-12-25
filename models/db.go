@@ -3,26 +3,40 @@ package models
 import (
 	"context"
 	"log"
+	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 var GlobalC *mongo.Client
 
 func init() {
-	// db_url := os.Getenv("MONGODB_URL")
-	db_url := "mongodb://webuser:web987@192.168.247.129:27017/todo_data?authSource=admin"
+	db_url := os.Getenv("MONGODB_URL")
 	if len(db_url) == 0 {
 		log.Fatalln("no MONGODB_URL provided")
 	}
 
 	// Create a new client and connect to the server
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db_url))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	// client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db_url))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(db_url))
 	if err != nil {
 		log.Fatalln("db Connect error ", err)
 	}
+
+	// check db connection
+	ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatalln("db ping error ", err)
+	}
+
 	GlobalC = client
 
 	log.Println("db inited")
