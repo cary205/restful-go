@@ -7,6 +7,7 @@ import (
 
 	"github.com/cary205/restful-go/models"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var (
@@ -51,15 +52,15 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	var todo models.Todo
-	// if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
-	// 	responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
-	// 	return
-	// }
-	// todo.Id = bson.NewObjectId()
-	// if err := dao.InsertTodo(todo); err != nil {
-	// 	responseWithJson(w, http.StatusInternalServerError, err.Error())
-	// 	return
-	// }
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	todo.Id = primitive.NewObjectID()
+	if err := dao.InsertTodo(todo); err != nil {
+		responseWithJson(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	responseWithJson(w, http.StatusCreated, todo)
 }
 

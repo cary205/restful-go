@@ -63,10 +63,9 @@ func FindOne(db, collection string, query, selector, result interface{}) error {
 }
 
 func Insert(db, collection string, docs ...interface{}) error {
-	// ms, c := connect(db, collection)
-	// defer ms.Close()
-	// return c.Insert(docs...)
-	return nil
+	coll := GlobalC.Database(db).Collection(collection)
+	_, err := coll.InsertMany(context.TODO(), docs)
+	return err
 }
 
 func Update(db, collection string, query, update interface{}) error {
