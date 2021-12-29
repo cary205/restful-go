@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"errors"
 	"log"
 	"os"
 	"time"
@@ -69,10 +70,15 @@ func Insert(db, collection string, docs ...interface{}) error {
 }
 
 func Update(db, collection string, query, update interface{}) error {
-	// ms, c := connect(db, collection)
-	// defer ms.Close()
-	// return c.Update(query, update)
-	return nil
+	coll := GlobalC.Database(db).Collection(collection)
+	result, err := coll.ReplaceOne(context.TODO(), query, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		err = errors.New("No document found")
+	}
+	return err
 }
 
 func Remove(db, collection string, query interface{}) error {

@@ -68,12 +68,12 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	log.Println("UpdateTodo called")
 
 	defer r.Body.Close()
-	var params models.Todo
-	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+	var todo models.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	if err := dao.UpdateTodo(params); err != nil {
+	if err := dao.UpdateTodo(todo); err != nil {
 		responseWithJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
