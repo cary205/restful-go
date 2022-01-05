@@ -82,8 +82,13 @@ func Update(db, collection string, query, update interface{}) error {
 }
 
 func Remove(db, collection string, query interface{}) error {
-	// ms, c := connect(db, collection)
-	// defer ms.Close()
-	// return c.Remove(query)
-	return nil
+	coll := GlobalC.Database(db).Collection(collection)
+	result, err := coll.DeleteOne(context.TODO(), query, nil)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		err = errors.New("No document found")
+	}
+	return err
 }

@@ -86,7 +86,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	if err := dao.RemoveTodo(id); err != nil {
-		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
+		responseWithJson(w, http.StatusBadRequest, err.Error())
 		return
 	}
 

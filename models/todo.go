@@ -53,12 +53,12 @@ func (m *Todo) UpdateTodo(todo Todo) error {
 }
 
 func (m *Todo) RemoveTodo(id string) error {
-	// log.Println("RemoveTodo called")
+	log.Println("RemoveTodo called")
 
-	// if !bson.IsObjectIdHex(id) {
-	// 	return errors.New("Invalid OID")
-	// }
+	docID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("Invalid OID")
+	}
 
-	// return Remove(db, collection, bson.M{"_id": bson.ObjectIdHex(id)})
-	return nil
+	return Remove(db, collection, bson.M{"_id": docID})
 }
