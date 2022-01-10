@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TEST</title>
+    </head>
+
+    <body>
+        <h1>Hello</h1>
+        host: <input type="text" id="host" name="host" value="localhost" /><br />
+        port: <input type="text" id="port" name="port" value="8080" /><br />
+        <input type="button" value="SEND" onclick="getAllData()"/><br />
+        <hr />
+        response: <br />
+        <pre id="res"></pre>
+        <hr />
+        <br />
+        <a href="https://google.com">Googleeeeee</a>
+    </body>
+
+</html>
+
+<script>
+    function getHost() {
+        return document.getElementById("host").value;
+    }
+
+    function getPort() {
+        return document.getElementById("port").value;
+    }
+
+    function getAllData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://" + getHost() + ":" + getPort() + "/todos");
+        // xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.onload = function() {
+            var res = JSON.parse(xhr.responseText)
+            document.getElementById("res").innerText = JSON.stringify(obj, undefined, 2)
+        }
+        // xhr.send(JSON.stringify({name: "aaa", tel: "bbb"}));
+        xhr.send();
+    }
+    
+</script>

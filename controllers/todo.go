@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 
@@ -91,4 +92,11 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responseWithJson(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func Test(w http.ResponseWriter, r *http.Request) {
+	log.Println("Test called")
+
+	tmpl := template.Must(template.ParseFiles("page/test.html"))
+	tmpl.Execute(w, nil)
 }

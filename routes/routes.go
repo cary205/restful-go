@@ -23,6 +23,7 @@ func init() {
 	register("POST", "/todos", controllers.CreateTodo)
 	register("PUT", "/todos", controllers.UpdateTodo)
 	register("DELETE", "/todos/{id}", controllers.DeleteTodo)
+	register("GET", "/test", controllers.Test)
 
 	log.Println("routes inited")
 
