@@ -70,6 +70,16 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	var todo models.Todo
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	docID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		responseWithJson(w, http.StatusBadRequest, "Invalid OID")
+		return
+	}
+	todo.Id = docID
+
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
 		return

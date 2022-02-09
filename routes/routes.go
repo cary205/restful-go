@@ -21,7 +21,7 @@ func init() {
 	register("GET", "/todos", controllers.AllTodos)
 	register("GET", "/todos/{id}", controllers.FindTodo)
 	register("POST", "/todos", controllers.CreateTodo)
-	register("PUT", "/todos", controllers.UpdateTodo)
+	register("PUT", "/todos/{id}", controllers.UpdateTodo)
 	register("DELETE", "/todos/{id}", controllers.DeleteTodo)
 	register("GET", "/test", controllers.Test)
 
