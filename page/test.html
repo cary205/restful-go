@@ -30,12 +30,16 @@
     }
 
     function getAllData() {
+        document.getElementById("res").innerText = '';
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "http://" + getHost() + ":" + getPort() + "/todos");
         // xhr.setRequestHeader('Content-type', 'application/json');
         xhr.onload = function() {
-            var res = JSON.parse(xhr.responseText)
-            document.getElementById("res").innerText = JSON.stringify(obj, undefined, 2)
+            var res = JSON.parse(xhr.responseText);
+            document.getElementById("res").innerText = JSON.stringify(res, undefined, 2);
+        }
+        xhr.onerror = function() {
+            alert("xhr error!!");
         }
         // xhr.send(JSON.stringify({name: "aaa", tel: "bbb"}));
         xhr.send();
