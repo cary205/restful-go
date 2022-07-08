@@ -24,6 +24,7 @@ func init() {
 	register("PUT", "/todos/{id}", controllers.UpdateTodo)
 	register("DELETE", "/todos/{id}", controllers.DeleteTodo)
 	register("GET", "/test", controllers.Test)
+	register("GET", "/task", controllers.TaskIndex)
 
 	log.Println("routes inited")
 

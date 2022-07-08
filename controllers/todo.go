@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/cary205/restful-go/models"
 	"github.com/gorilla/mux"
@@ -110,4 +111,27 @@ func Test(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.ParseFiles("page/test.html"))
 	tmpl.Execute(w, nil)
+}
+
+type Tasks []Task
+type Task struct {
+	Name      string    `json:"name"`
+	Completed bool      `json:"completed"`
+	Due       time.Time `json:"due"`
+}
+
+func TaskIndex(w http.ResponseWriter, r *http.Request) {
+
+	tasks := Tasks{
+		Task{Name: "Write presentation"},
+		Task{Name: "Host meetup"},
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(tasks)
+
+	// body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+
 }
