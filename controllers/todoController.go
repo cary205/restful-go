@@ -12,6 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ErrorResult struct {
+	Error string `json:"error"`
+}
+
 var (
 	dao = models.Todo{}
 )
@@ -40,13 +44,32 @@ func AllTodos(w http.ResponseWriter, r *http.Request) {
 func FindTodo(w http.ResponseWriter, r *http.Request) {
 	log.Println("FindTodo called")
 
+	// get id
 	vars := mux.Vars(r)
 	id := vars["id"]
-	result, err := dao.FindTodoById(id)
+
+	// get and check docID
+	docID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		responseWithJson(w, http.StatusInternalServerError, err.Error())
+		responseWithJson(w, http.StatusBadRequest, ErrorResult{Error: "Invalid OID"})
 		return
 	}
+
+	// DO
+	result, err := dao.FindTodoById(docID)
+
+	// error check
+	if err != nil {
+		errorResult := ErrorResult{Error: err.Error()}
+		if err.Error() == "mongo: no documents in result" {
+			responseWithJson(w, http.StatusNotFound, errorResult)
+		} else {
+			responseWithJson(w, http.StatusInternalServerError, errorResult)
+		}
+		return
+	}
+
+	// ok result
 	responseWithJson(w, http.StatusOK, result)
 }
 

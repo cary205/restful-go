@@ -26,17 +26,11 @@ func (m *Todo) FindAllTodos() ([]Todo, error) {
 	return result, err
 }
 
-func (m *Todo) FindTodoById(id string) (Todo, error) {
+func (m *Todo) FindTodoById(docID primitive.ObjectID) (Todo, error) {
 	log.Println("FindTodoById called")
 
 	var result Todo
-
-	docID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return result, errors.New("Invalid OID")
-	}
-
-	err = FindOne(db, collection, bson.M{"_id": docID}, nil, &result)
+	err := FindOne(db, collection, bson.M{"_id": docID}, nil, &result)
 	return result, err
 }
 
