@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -46,13 +45,8 @@ func (m *Todo) UpdateTodo(todo Todo) error {
 	return Update(db, collection, bson.M{"_id": todo.Id}, todo)
 }
 
-func (m *Todo) RemoveTodo(id string) error {
+func (m *Todo) RemoveTodo(docID primitive.ObjectID) error {
 	log.Println("RemoveTodo called")
-
-	docID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return errors.New("Invalid OID")
-	}
 
 	return Remove(db, collection, bson.M{"_id": docID})
 }

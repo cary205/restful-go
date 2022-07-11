@@ -12,6 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type EmptyResult struct {
+}
+
 type ErrorResult struct {
 	Error string `json:"error"`
 }
@@ -119,14 +122,30 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	log.Println("DeleteTodo called")
 
+	// get id
 	vars := mux.Vars(r)
 	id := vars["id"]
-	if err := dao.RemoveTodo(id); err != nil {
-		responseWithJson(w, http.StatusBadRequest, err.Error())
+
+	// get and check docID
+	docID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		responseWithJson(w, http.StatusBadRequest, ErrorResult{Error: "Invalid OID"})
 		return
 	}
 
-	responseWithJson(w, http.StatusOK, map[string]string{"result": "success"})
+	// DO & error check
+	if err := dao.RemoveTodo(docID); err != nil {
+		errorResult := ErrorResult{Error: err.Error()}
+		if err.Error() == "No document found" {
+			responseWithJson(w, http.StatusNotFound, errorResult)
+		} else {
+			responseWithJson(w, http.StatusInternalServerError, errorResult)
+		}
+		return
+	}
+
+	// ok result
+	responseWithJson(w, http.StatusOK, EmptyResult{})
 }
 
 func Test(w http.ResponseWriter, r *http.Request) {
