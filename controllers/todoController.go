@@ -12,9 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type EmptyResult struct {
-}
-
 type ErrorResult struct {
 	Error string `json:"error"`
 }
@@ -145,7 +142,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ok result
-	responseWithJson(w, http.StatusOK, EmptyResult{})
+	responseWithJson(w, http.StatusNoContent, nil)
 }
 
 func Test(w http.ResponseWriter, r *http.Request) {
