@@ -33,11 +33,16 @@ func AllTodos(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	var todos []models.Todo
+	// DO
 	todos, err := dao.FindAllTodos()
+
+	// error check
 	if err != nil {
 		responseWithJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	// ok result
 	responseWithJson(w, http.StatusOK, todos)
 }
 
@@ -78,15 +83,22 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	var todo models.Todo
+
+	// parsing body
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+
+	// DO
+	// TODO: allways new id, no 409 Conflict??
 	todo.Id = primitive.NewObjectID()
 	if err := dao.InsertTodo(todo); err != nil {
 		responseWithJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	// ok result
 	responseWithJson(w, http.StatusCreated, todo)
 }
 
@@ -96,8 +108,11 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var todo models.Todo
 
+	// get id
 	vars := mux.Vars(r)
 	id := vars["id"]
+
+	// get and check docID
 	docID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		responseWithJson(w, http.StatusBadRequest, "Invalid OID")
@@ -105,14 +120,20 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo.Id = docID
 
+	// parsing body
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		responseWithJson(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+
+	// DO
 	if err := dao.UpdateTodo(todo); err != nil {
 		responseWithJson(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	// ok result
+	// TODO: return modified resource
 	responseWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
@@ -145,6 +166,7 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	responseWithJson(w, http.StatusNoContent, nil)
 }
 
+/***** FOR TEST *****/
 func Test(w http.ResponseWriter, r *http.Request) {
 	log.Println("Test called")
 
@@ -174,3 +196,5 @@ func TaskIndex(w http.ResponseWriter, r *http.Request) {
 	// body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 
 }
+
+/***** FOR TEST *****/
